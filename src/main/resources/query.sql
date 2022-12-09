@@ -7,4 +7,7 @@ create table user_roles (user_id bigint not null, role_id bigint not null, prima
 
 INSERT INTO role (id, description, name) VALUES (4, 'Admin role', 'ADMIN');
 INSERT INTO role (id, description, name) VALUES (5, 'User role', 'USER');
-
+INSERT INTO role (id, description, name) VALUES (6, 'QA role', 'QA');
+INSERT INTO role (id, description, name) VALUES (7, 'RD role', 'RD');
+INSERT INTO role (id, description, name) VALUES (8, 'PM role', 'PM');
+INSERT INTO role (id, description, name) VALUES (8, 'PM role', 'PM');

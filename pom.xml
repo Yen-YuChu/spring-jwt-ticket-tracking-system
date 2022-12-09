@@ -8,10 +8,10 @@
 		<version>2.3.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.akhianand</groupId>
-	<artifactId>spring-role-jwt</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>ticket-tracking-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-role-jwt</name>
+	<name>ticket-tracking-system</name>
 	<description>A Spring Boot Project User Management Project with JWT and Role based API Access</description>
 
 	<properties>
@@ -57,6 +57,14 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!--Add-->
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.0.13.Final</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
