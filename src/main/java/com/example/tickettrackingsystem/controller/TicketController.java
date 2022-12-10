@@ -2,20 +2,18 @@ package com.example.tickettrackingsystem.controller;
 
 import com.example.tickettrackingsystem.dao.TicketDao;
 import com.example.tickettrackingsystem.model.tracking.Ticket;
-import com.example.tickettrackingsystem.model.tracking.TicketType;
 import com.example.tickettrackingsystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/ticket")
+@RequestMapping("/api")
 public class TicketController {
 
     @Autowired
@@ -24,69 +22,64 @@ public class TicketController {
     @Autowired
     private TicketDao ticketDao;
 
-    @PreAuthorize("hasRole('PM') || hasRole('ADMIN')")
-    @RequestMapping(value="/feature", method = RequestMethod.POST)
-    @ResponseStatus( HttpStatus.CREATED )
-    public Object createFeatureTicket(@RequestBody Ticket ticket) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-        System.out.println("username : " + username);
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/ticket")
+    public ResponseEntity<Map<String, Object>> getAllTicketsPageable(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "3") int size) {
         try {
-            ticket.setResolved(false);
-            ticket.setTicketType(TicketType.FEATURE_REQUEST);
-            ticket = ticketDao.save(ticket);
+            Map<String, Object> response = ticketService.getPageableResultByPageAndSize(page, size);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('PM') || hasRole('QA') || hasRole('ADMIN')")
+    @PostMapping(value="/ticket")
+    public Object createTicket(@RequestBody Ticket ticket) {
+        try {
+            ticket = ticketService.createTicketByRole(ticket);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return ticket;
+        return new ResponseEntity<>(ticket, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('QA') || hasRole('ADMIN')")
-    @RequestMapping(value="/test", method = RequestMethod.POST)
-    @ResponseStatus( HttpStatus.CREATED )
-    public Object createTestTicket(@RequestBody Ticket ticket) {
-        try {
-            ticket.setResolved(false);
-            ticket.setTicketType(TicketType.TEST_CASE);
-            ticket = ticketDao.save(ticket);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/ticket/{id}")
+    public ResponseEntity<Object> getTicketById(@PathVariable Long id) {
+        if (!ticketDao.existsById(id)) {
+            return new ResponseEntity<>("Not found Ticket with id: " + id, HttpStatus.NOT_FOUND);
         }
-        return ticket;
+        Ticket ticket = ticketDao.findTicketById(id);
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/feature/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteFeatureTicketById(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN') || hasRole('QA')")
+    @DeleteMapping("/ticket/{id}")
+    public ResponseEntity<Object> deleteTicketById(@PathVariable Long id) {
         try {
-            ticketDao.deleteById(id);
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            return new ResponseEntity<>("No Ticket issue exist for id: " + id, HttpStatus.GONE);
+            if (!ticketDao.existsById(id)) {
+                return new ResponseEntity<>(HttpStatus.GONE);
+            }
+            ticketService.deleteTicketById(id);
+        } catch (IllegalArgumentException iae) {
+            return new ResponseEntity<>("You don't have permission to delete ticket for id:" + id, HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>("Succeed", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasRole('PM') || hasRole('ADMIN')")
-    @RequestMapping(value="/feature/{id}", method = RequestMethod.PATCH)
-    public Ticket patchFeatureTicketById(@RequestBody Ticket ticket, @PathVariable Long id){
-        return ticketService.patchTicketById(id, ticket);
+    @PreAuthorize("hasRole('PM') || hasRole('QA') || hasRole('ADMIN') || hasRole('RD')")
+    @PutMapping(value="/ticket/{id}")
+    public ResponseEntity<Object> updateTicketById(@RequestBody Ticket ticket, @PathVariable Long id){
+        Ticket updatedTicket;
+        try {
+            updatedTicket = ticketService.updateTicketByRole(id, ticket);
+        } catch (IllegalArgumentException iae) {
+            return new ResponseEntity<>("You don't have permission to update ticket for id:" + id, HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(updatedTicket, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value="/feature/{id}", method = RequestMethod.PUT)
-    public Ticket updateFeatureTicketById(@RequestBody Ticket ticket, @PathVariable Long id){
-        return ticketService.updateTicketById(id, ticket);
-    }
-
-    @PreAuthorize("hasRole('QA') || hasRole('ADMIN')")
-    @RequestMapping(value="/test/{id}", method = RequestMethod.PUT)
-    public Ticket updateTestTicketById(@RequestBody Ticket ticket, @PathVariable Long id){
-        return ticketService.updateTicketById(id, ticket);
-    }
-
-    @PreAuthorize("hasRole('RD') || hasRole('ADMIN')")
-    @RequestMapping(value="/feature/{id}/resolved", method = RequestMethod.PATCH)
-    public Ticket patchFeatureTicketResolvedById(@RequestBody Ticket ticket, @PathVariable Long id){
-        return ticketService.patchTicketResolvedById(id, ticket);
-    }
 }

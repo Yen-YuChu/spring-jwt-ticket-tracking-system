@@ -1,6 +1,7 @@
 package com.example.tickettrackingsystem.model.tracking;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -9,12 +10,15 @@ public class Content {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     @Column
     private String summary;
 
+    @NotNull
     @Column
     private String description;
 
+    @NotNull
     @Column
     private Boolean resolved;
 

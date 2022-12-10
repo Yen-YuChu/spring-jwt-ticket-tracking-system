@@ -2,17 +2,16 @@ package com.example.tickettrackingsystem.model.tracking;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class Ticket extends Content {
-    /*@Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;*/
-
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name="severity")
     private Severity severity;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name="priority")
     private Priority priority;
@@ -22,17 +21,8 @@ public class Ticket extends Content {
     @Column(name="ticket_type")
     private TicketType ticketType;
 
-    /*@Column
-    private Boolean resolved;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }*/
-
+    @OneToMany(mappedBy="ticket", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
     public Severity getSeverity() {
         return severity;
     }
@@ -40,14 +30,6 @@ public class Ticket extends Content {
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
-
-    /*public Boolean getResolved() {
-        return resolved;
-    }
-
-    public void setResolved(Boolean resolved) {
-        this.resolved = resolved;
-    }*/
 
     public Priority getPriority() {
         return priority;

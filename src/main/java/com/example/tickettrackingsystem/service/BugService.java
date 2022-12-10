@@ -2,11 +2,16 @@ package com.example.tickettrackingsystem.service;
 
 import com.example.tickettrackingsystem.model.tracking.Bug;
 
-public interface BugService {
-    Bug findBugById(Long id);
+import java.util.Map;
 
+public interface BugService {
     Bug patchBugById(Long id, Bug bug);
-    //Bug save(Bug bug);
 
     Bug updateBugById(Long id, Bug bug);
+
+    Map<String, Object> getPageableResultByPageAndSize(Integer page, Integer size);
+
+    Bug updateBugByRole(Long id, Bug bug);
+
+    Bug createBug(Bug bug);
 }
