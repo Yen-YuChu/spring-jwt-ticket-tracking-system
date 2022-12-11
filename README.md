@@ -31,5 +31,9 @@ Development environment :
  you can pass all the description language to https://sequencediagram.org/
  then you will get the Sequence Diagram for this project.
  
+ And also you can see 'plantUML.txt' under '/resources,
+ you can pass all the description language to https://plantuml-editor.kkeisuke.com/
+ then you will get UML for a system architecture.
+ 
  
  
