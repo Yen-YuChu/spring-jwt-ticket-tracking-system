@@ -3,6 +3,8 @@ package com.example.tickettrackingsystem.controller;
 import com.example.tickettrackingsystem.dao.TicketDao;
 import com.example.tickettrackingsystem.model.tracking.Ticket;
 import com.example.tickettrackingsystem.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ public class TicketController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/ticket")
+    @Operation(summary = "List Tickets", description = "List Tickets support pageable")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Map<String, Object>> getAllTicketsPageable(@RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "3") int size) {
         try {
@@ -37,6 +41,8 @@ public class TicketController {
 
     @PreAuthorize("hasRole('PM') || hasRole('QA') || hasRole('ADMIN')")
     @PostMapping(value="/ticket")
+    @Operation(summary = "Create Ticket", description = "Create Ticket")
+    @SecurityRequirement(name = "Bearer Authentication")
     public Object createTicket(@RequestBody Ticket ticket) {
         try {
             ticket = ticketService.createTicketByRole(ticket);
@@ -48,6 +54,8 @@ public class TicketController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/ticket/{id}")
+    @Operation(summary = "Get Ticket", description = "Get Ticket")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getTicketById(@PathVariable Long id) {
         if (!ticketDao.existsById(id)) {
             return new ResponseEntity<>("Not found Ticket with id: " + id, HttpStatus.NOT_FOUND);
@@ -58,6 +66,8 @@ public class TicketController {
 
     @PreAuthorize("hasRole('ADMIN') || hasRole('QA')")
     @DeleteMapping("/ticket/{id}")
+    @Operation(summary = "Delete Ticket", description = "Delete Ticket")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> deleteTicketById(@PathVariable Long id) {
         try {
             if (!ticketDao.existsById(id)) {
@@ -72,6 +82,8 @@ public class TicketController {
 
     @PreAuthorize("hasRole('PM') || hasRole('QA') || hasRole('ADMIN') || hasRole('RD')")
     @PutMapping(value="/ticket/{id}")
+    @Operation(summary = "Update Ticket", description = "Update Ticket")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> updateTicketById(@RequestBody Ticket ticket, @PathVariable Long id){
         Ticket updatedTicket;
         try {

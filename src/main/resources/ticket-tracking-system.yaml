@@ -1,0 +1,680 @@
+paths:
+  /api/comment/{id}:
+    put:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: {
+                  "username" : user6,
+                  "id": 6,
+                  "content" : "this is a content of a comment"
+                }
+        '404':
+          description: NOT FOUND
+        '401':
+          description: Authorization information is missing or invalid.
+                 
+      description: Update Comment
+      summary: Update Comment
+      tags:
+        - comment-controller
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: string
+              example: {
+                "content" : "this is a content of a comment"
+              }
+      operationId: updateComment
+    get:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: NOT FOUND
+        '401':
+          description: Authorization information is missing or invalid.
+      description: Get Comment
+      summary: Get Comment
+      tags:
+        - comment-controller
+      operationId: getCommentByCommentId
+    delete:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: NO Content
+        '410':
+          description: GONE
+        '401':
+          description: Authorization information is missing or invalid.
+        '403':
+          description: FORBIDDEN  
+      description: Delete Comment
+      summary: Delete Comment
+      tags:
+        - comment-controller
+      operationId: deleteComment
+  /users/authenticate:
+    post:
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: { "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMyIsInJvbGVzIjoiUk9MRV9RQSxST0xFX1VTRVIiLCJpYXQiOjE2NzA3NDcxOTUsImV4cCI6MTY3MDc2NTE5NX0.VuoKLE47KwsgXEsBoYzOzr-aPLUo4cSWmq3zrvV9TUs" }
+      tags:
+        - user-controller
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: string
+              example: {
+  "username": "user6",
+  "password": "welcome1"
+}
+      operationId: generateToken
+  /api/ticket:
+    get:
+      parameters:
+        - required: false
+          schema:
+            default: 0
+            format: int32
+            type: integer
+          in: query
+          name: page
+        - required: false
+          schema:
+            default: 3
+            format: int32
+            type: integer
+          in: query
+          name: size
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: object
+                type: object
+      description: List Tickets support pageable
+      summary: List Tickets
+      tags:
+        - ticket-controller
+      operationId: getAllTicketsPageable
+    post:
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: {
+  "id": 1,                
+  "priority": "HIGH",
+  "severity": "CRITICAL",
+  "ticketType": "FEATURE_REQUEST",
+  "description": "description",
+  "summary": "summary",
+  "resolved": false
+}
+        '401':
+          description: Authorization information is missing or invalid.
+        '400':
+          description: Bad Request
+      description: Create Ticket
+      summary: Create Ticket
+      tags:
+        - ticket-controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: {
+  "priority": "HIGH",
+  "severity": "CRITICAL",
+  "ticketType": "FEATURE_REQUEST",
+  "description": "description",
+  "summary": "summary"
+}
+      operationId: createTicket
+  /api/bug/{id}:
+    put:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Bug'
+        '404':
+          description: NOT FOUND
+        '401':
+          description: Authorization information is missing or invalid.
+        '400':
+          description: Bad Request
+      description: Update Bug
+      summary: Update Bug
+      tags:
+        - bug-controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bug'
+      operationId: updateBugById
+    delete:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: NO Content
+        '410':
+          description: GONE
+        '401':
+          description: Authorization information is missing or invalid.
+      description: Delete Bug
+      summary: Delete Bug
+      tags:
+        - bug-controller
+      operationId: deleteBugById
+    get:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Bug'
+        '404':
+          description: NOT FOUND
+        '401':
+          description: Authorization information is missing or invalid.
+      description: Get Bug
+      summary: Get Bug
+      tags:
+        - bug-controller
+      operationId: getBugById
+  /api/ticket/{id}/comment:
+    post:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: {
+                  "username" : user6,
+                  "id": 6,
+                  "content" : "this is a content of a comment"
+                }
+        '401':
+          description: Authorization information is missing or invalid.
+        '400':
+          description: Bad Request  
+      description: Create Comment
+      summary: Create Comment
+      tags:
+        - comment-controller
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: string
+              example: {
+                "content" : "this is a content of a comment"
+              }
+      operationId: createComment
+  /api/bug:
+    get:
+      parameters:
+        - required: false
+          schema:
+            default: 0
+            format: int32
+            type: integer
+          in: query
+          name: page
+        - required: false
+          schema:
+            default: 3
+            format: int32
+            type: integer
+          in: query
+          name: size
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: object
+                type: object
+      description: List Bugs supported pageable
+      summary: List Bugs
+      tags:
+        - bug-controller
+      operationId: getAllBugsPageable
+    post:
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: {
+  "description": "description",
+  "id": 1,
+  "summary": "summary",
+  "resolved": false
+}
+        '401':
+          description: Authorization information is missing or invalid.
+        '400':
+          description: Bad Request
+      description: Create Bug
+      summary: Create Bug
+      tags:
+        - bug-controller
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: string
+              example: {
+  "description": "description",
+  "summary": "summary"
+}
+      operationId: createBug
+  /api/ticket/{id}:
+    put:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '404':
+          description: NOT FOUND
+        '401':
+          description: Authorization information is missing or invalid.
+        '400':
+          description: Bad Request
+      description: Update Ticket
+      summary: Update Ticket
+      tags:
+        - ticket-controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      operationId: updateTicketById
+    get:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+      description: Get Ticket
+      summary: Get Ticket
+      tags:
+        - ticket-controller
+      operationId: getTicketById
+    delete:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: NO Content
+        '410':
+          description: GONE
+        '401':
+          description: Authorization information is missing or invalid.
+        '403':
+          description: FORBIDDEN
+      description: Delete Ticket
+      summary: Delete Ticket
+      tags:
+        - ticket-controller
+      operationId: deleteTicketById
+  /api/ticket/{id}/comments:
+    get:
+      parameters:
+        - required: true
+          schema:
+            format: int64
+            type: integer
+          in: path
+          name: id
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+      description: List Comments of a Ticket
+      summary: List Comments of a Ticket
+      tags:
+        - comment-controller
+      operationId: getAllCommentsByTicketId
+  /users/register:
+    post:
+      responses:
+        '201':
+          description: Created
+          content:
+            'application/json':
+              schema:
+                type: string
+                example: {
+    "id": 1,
+    "username": "user6",
+    "email": "user6@pm.ruckus",
+    "phone": "987654321",
+    "name": "user6",
+    "businessTitle": "PM",
+    "roles": [
+        {
+            "id": 8,
+            "name": "PM",
+            "description": "PM role"
+        },
+        {
+            "id": 5,
+            "name": "USER",
+            "description": "User role"
+        }
+    ]
+}
+      tags:
+        - user-controller
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: string
+              example: {
+    "username": "user6",
+    "password":"welcome1",
+    "email": "user6@pm.ruckus",
+    "name":"user6",
+    "phone": "987654321",
+    "businessTitle": "PM"
+}
+      operationId: saveUser
+servers:
+  - url: localhost:8080
+    description: For Ruckus DEMO
+openapi: 3.0.1
+info:
+  description: |-
+    This is a  ticket tracking system. This system allows QA to report a bug and RD can mark a bug as resolved.
+    
+    A. Phase I Requirement:
+
+    - There are two types of user: QA and RD.
+
+    - Only QA can create a bug, edit a bug and delete a bug.
+
+    - Only RD can resolve a bug.
+
+    - Summary field and Description filed are must have of a bug when QA is creating a bug.
+
+ 
+
+    B. Phase II Requirement:
+
+    - All the users can leave any comments below a ticket.
+
+    - Adding new field Severity and Priority to a ticket.
+
+    - Adding new type of user "PM" that can create new ticket type "Feature Request". And only RD can mark it as resolved.
+
+    - Adding new ticket type "Test Case" that only QA can create and resolve. It's read-only for other type of users.
+
+    - Adding Administrator user that can manage all the stuffs including adding new QA, RD and PM user.
+    
+    Some useful links:
+    - [The Ticket Tracking System repository](https://github.com/Yen-YuChu/spring-jwt-ticket-tracking-system.git)
+  version: '1.0'
+  title: Ticket Tracking System API
+  license:
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    name: Apache 2.0
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Comment:
+      required:  # List the required properties here
+      - content
+      properties:
+        username:
+          type: string
+        id:
+          format: int64
+          type: integer
+        content:
+          type: string
+      type: object
+    Bug:
+      required:
+        - description
+        - resolved
+        - summary
+      properties:
+        description:
+          type: string
+        id:
+          format: int64
+          type: integer
+        summary:
+          type: string
+        resolved:
+          type: boolean
+      type: object
+    
+    Ticket:
+      required:
+        - description
+        - priority
+        - resolved
+        - severity
+        - summary
+        - ticketType
+      properties:
+        priority:
+          type: string
+          enum:
+            - HIGH
+            - MEDIUM
+            - LOW
+        severity:
+          type: string
+          enum:
+            - CRITICAL
+            - ERROR
+            - WARNING
+            - INFORMATION
+            - VERBOSE
+        ticketType:
+          type: string
+          enum:
+            - FEATURE_REQUEST
+            - TEST_CASE
+        description:
+          type: string
+        
+        summary:
+          type: string
+        resolved:
+          type: boolean
+      type: object
+    User:
+      required:
+      - username
+      - email
+      - password
+      properties:
+        businessTitle:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        id:
+          format: int64
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        roles:
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Role'
+          type: array
+        phone:
+          type: string
+      type: object
+    Role:
+      properties:
+        description:
+          type: string
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      type: object

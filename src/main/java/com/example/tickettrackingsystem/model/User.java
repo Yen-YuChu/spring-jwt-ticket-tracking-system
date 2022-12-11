@@ -2,6 +2,7 @@ package com.example.tickettrackingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -11,14 +12,17 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @NotNull
+    @Column(unique = true)
     private String username;
 
+    @NotNull
     @Column
     @JsonIgnore
     private String password;
 
-    @Column
+    @NotNull
+    @Column(unique = true)
     private String email;
 
     @Column

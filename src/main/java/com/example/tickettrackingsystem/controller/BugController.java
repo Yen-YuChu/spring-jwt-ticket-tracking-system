@@ -3,6 +3,8 @@ package com.example.tickettrackingsystem.controller;
 import com.example.tickettrackingsystem.dao.BugDao;
 import com.example.tickettrackingsystem.model.tracking.Bug;
 import com.example.tickettrackingsystem.service.BugService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,8 @@ public class BugController {
 
     @PreAuthorize("hasRole('QA') || hasRole('ADMIN')")
     @PostMapping(value="/bug")
-    @ResponseStatus( HttpStatus.CREATED )
+    @Operation(summary = "Create Bug", description = "Create Bug")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> createBug(@RequestBody Bug bug){
         try {
             bug = bugService.createBug(bug);
@@ -37,6 +40,8 @@ public class BugController {
 
     @PreAuthorize("hasRole('QA') || hasRole('ADMIN')")
     @DeleteMapping(value = "/bug/{id}")
+    @Operation(summary = "Delete Bug", description = "Delete Bug")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> deleteBugById(@PathVariable Long id) {
         if (!bugDao.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.GONE);
@@ -48,6 +53,8 @@ public class BugController {
 
     @PreAuthorize("hasRole('QA') || hasRole('ADMIN') || hasRole('RD')")
     @PutMapping(value="/bug/{id}")
+    @Operation(summary = "Update Bug", description = "Update Bug")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> updateBugById(@RequestBody Bug bug, @PathVariable Long id){
         if (!bugDao.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -57,6 +64,8 @@ public class BugController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/bug")
+    @Operation(summary = "List Bugs", description = "List Bugs supported pageable")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Map<String, Object>> getAllBugsPageable(@RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "3") int size) {
         try {
@@ -68,7 +77,9 @@ public class BugController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping(value="/{id}")
+    @GetMapping(value="/bug/{id}")
+    @Operation(summary = "Get Bug", description = "Get Bug")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getBugById(@PathVariable Long id){
         if (!bugDao.existsById(id)) {
             return new ResponseEntity<>("Not found Bug with id: " + id, HttpStatus.NOT_FOUND);

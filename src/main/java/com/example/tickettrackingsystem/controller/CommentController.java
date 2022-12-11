@@ -6,6 +6,8 @@ import com.example.tickettrackingsystem.dao.CommentDao;
 import com.example.tickettrackingsystem.dao.TicketDao;
 import com.example.tickettrackingsystem.model.tracking.Comment;
 import com.example.tickettrackingsystem.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class CommentController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/ticket/{id}/comments")
+    @Operation(summary = "List Comments of a Ticket", description = "List Comments of a Ticket")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getAllCommentsByTicketId(@PathVariable(value = "id") Long ticketId) {
         if (!ticketDao.existsById(ticketId)) {
             return new ResponseEntity<>("Not found Ticket with id: " + ticketId, HttpStatus.NOT_FOUND);
@@ -41,6 +45,8 @@ public class CommentController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/comment/{id}")
+    @Operation(summary = "Get Comment", description = "Get Comment")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getCommentByCommentId(@PathVariable(value = "id") Long commentId) {
         Optional<Comment> comment = commentDao.findById(commentId);
         if (!comment.isPresent()) {
@@ -52,6 +58,8 @@ public class CommentController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/ticket/{id}/comment")
+    @Operation(summary = "Create Comment", description = "Create Comment")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> createComment(@PathVariable(value = "id") Long ticketId, @RequestBody Comment commentRequest) {
         if (!ticketDao.existsById(ticketId)) {
             return new ResponseEntity<>("Not found Ticket with id: " + ticketId, HttpStatus.NOT_FOUND);
@@ -64,6 +72,8 @@ public class CommentController {
 
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/comment/{id}")
+    @Operation(summary = "Update Comment", description = "Update Comment")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> updateComment(@PathVariable("id") long id, @RequestBody Comment commentRequest) {
         if (!commentDao.existsById(id)){
             return new ResponseEntity<>("Not found Comment with id: " + id, HttpStatus.NOT_FOUND);
@@ -80,6 +90,8 @@ public class CommentController {
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/comment/{id}")
+    @Operation(summary = "Delete Comment", description = "Delete Comment")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> deleteComment(@PathVariable("id") long id) {
         if (!commentDao.existsById(id)){
             return new ResponseEntity<>(HttpStatus.GONE);
@@ -92,15 +104,4 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/ticket/{id}/comment")
-    public ResponseEntity<Object> deleteAllCommentsOfTicket(@PathVariable(value = "id") Long ticketId) {
-        try {
-            commentDao.deleteByTicketId(ticketId);
-        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            return new ResponseEntity<>("Not found Ticket with id: " + ticketId, HttpStatus.GONE);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
 }

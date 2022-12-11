@@ -7,8 +7,8 @@ import com.example.tickettrackingsystem.model.User;
 import com.example.tickettrackingsystem.model.UserDto;
 import com.example.tickettrackingsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,22 +45,10 @@ public class UserController {
     }
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
+    @ResponseStatus( HttpStatus.CREATED )
     public User saveUser(@RequestBody UserDto user){
         return userService.save(user);
     }
 
-
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value="/adminping", method = RequestMethod.GET)
-    public String adminPing(){
-        return "Only Admins Can Read This";
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @RequestMapping(value="/userping", method = RequestMethod.GET)
-    public String userPing(){
-        return "Any User Can Read This";
-    }
 
 }
