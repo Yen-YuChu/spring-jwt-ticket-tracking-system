@@ -16,6 +16,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/users")
@@ -46,8 +48,12 @@ public class UserController {
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
     @ResponseStatus( HttpStatus.CREATED )
-    public User saveUser(@RequestBody UserDto user){
-        return userService.save(user);
+    public ResponseEntity<?> saveUser(@RequestBody UserDto user){
+        try {
+            return new ResponseEntity<>(userService.save(user),HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 
 

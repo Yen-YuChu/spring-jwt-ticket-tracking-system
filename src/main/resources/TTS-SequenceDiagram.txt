@@ -1,0 +1,20 @@
+title Ticket Tracking System Sequence Diagram
+
+participant Client
+participant JwtAuthenticationFilter
+participant UserController
+participant SpringSecutityAuthorization
+participant BugController
+
+
+
+Client->UserController:POST /register including username and password
+Client->UserController:POST /authenticate with username and password
+UserController->Client: JWT token (xxx.yyy.zzz)
+Client->JwtAuthenticationFilter: GET /Bug/{id} \n Authorization Bearer xxx.yyy.zzz
+JwtAuthenticationFilter->JwtAuthenticationFilter:Validate JWT
+JwtAuthenticationFilter->SpringSecutityAuthorization:Forward
+SpringSecutityAuthorization->SpringSecutityAuthorization:Evaluate pre-authorize logic \n e.g. check for ROLE_USER
+SpringSecutityAuthorization->BugController:Forward
+BugController->SpringSecutityAuthorization:Response
+SpringSecutityAuthorization->Client:Forward \nResponse \n{id:1,"summary":"summary","description":"description","resolved": false}
