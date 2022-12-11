@@ -25,7 +25,11 @@ Development environment :
  So for now you can start testing.
  I create an API Document with Swagger, I put a yaml file called 'ticket-tracking-system.yaml' under '/resources'
  You can upload the file to https://editor.swagger.io/
- Then you will see all the apis definition.  
+ Then you will see all the apis definition with document.  
+ 
+ And also you can see 'TTS-SequenceDiagram.txt' under '/resources,
+ you can pass all the description language to https://sequencediagram.org/
+ then you will get the Sequence Diagram for this project.
  
  
  
