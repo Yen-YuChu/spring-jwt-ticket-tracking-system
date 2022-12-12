@@ -35,5 +35,6 @@ Development environment :
  you can pass all the description language to https://plantuml-editor.kkeisuke.com/
  then you will get UML for a system architecture.
  
+ This is the document to describe all apis and test cases. https://docs.google.com/document/d/1d1CpeOd9nSkixQXiIn3ANPsO4Vdvy5nss0KEy0AznIY/edit?usp=sharing
  
  
